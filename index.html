@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#8a5a44">
+<title>Plot Device</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="app-header">
+    <h1 class="app-title">🖋️ Plot Device</h1>
+    <p class="app-tagline">Random story elements to spark your next idea.</p>
+  </header>
+
+  <nav class="top-nav">
+    <button id="navGenerator" class="nav-link">Generator</button>
+    <button id="navDrafts" class="nav-link">My Drafts</button>
+  </nav>
+
+  <div id="generatorView" class="view">
+    <p class="subtitle">Toggle the categories you want, then roll for a random combination.</p>
+
+    <section class="toggles-section">
+      <div class="toggles-header">
+        <h2>Categories</h2>
+        <div class="toggle-actions">
+          <button id="selectAll" class="link-btn">Select all</button>
+          <button id="selectNone" class="link-btn">Select none</button>
+        </div>
+      </div>
+      <div id="categoryToggles" class="toggles-grid"></div>
+    </section>
+
+    <button id="generateBtn" class="generate-btn">Generate</button>
+
+    <section id="output" class="output"></section>
+
+    <button id="refineBtn" class="generate-btn secondary" hidden>Fine-tune this &rarr;</button>
+  </div>
+
+  <div id="workshopView" class="view" hidden>
+    <button id="backBtn" class="link-btn back-btn">&larr; Back to generator</button>
+
+    <h2 class="view-title">Fine-tune your story</h2>
+    <p class="subtitle">Edit any field directly, or click the dice to swap in a random suggestion. Nothing here is required.</p>
+
+    <section class="workshop-section">
+      <h2>Story elements</h2>
+      <div id="elementFields" class="field-list"></div>
+    </section>
+
+    <section class="workshop-section">
+      <h2>Outline</h2>
+      <p class="section-hint">Sketch the shape of the story. These are just prompts to build out an outline &mdash; there's no randomizer, since this part is up to you.</p>
+      <div id="outlineFields" class="field-list"></div>
+    </section>
+
+    <button id="saveDraftBtn" class="generate-btn">Save as Draft</button>
+  </div>
+
+  <div id="draftsView" class="view" hidden>
+    <h2 class="view-title">My Drafts</h2>
+    <p class="subtitle">Saved ideas from the workshop. Mark your favorites as a good idea, then export them to keep permanently.</p>
+
+    <div class="drafts-toolbar">
+      <button id="exportGoodBtn" class="link-btn">Export good ideas (.json)</button>
+      <label class="link-btn file-label">
+        Import good ideas (.json)
+        <input type="file" id="importGoodInput" accept="application/json" hidden>
+      </label>
+    </div>
+    <p class="section-hint">Exporting downloads a file &mdash; save it as <code>data/good-ideas.json</code> in your repo and commit it to keep those ideas permanently.</p>
+
+    <div id="draftsList" class="drafts-list"></div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

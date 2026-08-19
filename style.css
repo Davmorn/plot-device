@@ -251,6 +251,20 @@ body {
   gap: 1rem;
 }
 
+.act-heading {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0.5rem 0 0;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.act-heading:first-child {
+  margin-top: 0;
+}
+
 .field-group label {
   font-weight: 600;
   font-size: 0.95rem;

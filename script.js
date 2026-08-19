@@ -217,7 +217,17 @@ function renderOutlineFields() {
   const container = document.getElementById("outlineFields");
   container.innerHTML = "";
 
+  let lastAct = null;
+
   OUTLINE_FIELDS.forEach((field) => {
+    if (field.act && field.act !== lastAct) {
+      lastAct = field.act;
+      const actHeading = document.createElement("h3");
+      actHeading.className = "act-heading";
+      actHeading.textContent = field.act;
+      container.appendChild(actHeading);
+    }
+
     const group = document.createElement("div");
     group.className = "field-group";
 

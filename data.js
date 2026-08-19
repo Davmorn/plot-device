@@ -22,7 +22,38 @@ const CATEGORIES = {
       "A time traveler stuck in the wrong era",
       "A ship captain who's never lost a crew member",
       "A hermit dragged back into society",
-      "A clone questioning their own identity"
+      "A clone questioning their own identity",
+      "Spider-Man",
+      "Batman",
+      "Superman",
+      "Wonder Woman",
+      "Iron Man",
+      "Captain America",
+      "The Hulk",
+      "Wolverine",
+      "Black Panther",
+      "Harry Potter",
+      "Hermione Granger",
+      "Frodo Baggins",
+      "Aragorn",
+      "Luke Skywalker",
+      "Princess Leia",
+      "Han Solo",
+      "Katniss Everdeen",
+      "Sherlock Holmes",
+      "James Bond",
+      "Indiana Jones",
+      "Ellen Ripley",
+      "Sarah Connor",
+      "Neo",
+      "John Wick",
+      "Jon Snow",
+      "Daenerys Targaryen",
+      "Rocky Balboa",
+      "Elsa",
+      "Moana",
+      "Mulan",
+      "Simba"
     ]
   },
   setting: {
@@ -152,7 +183,35 @@ const CATEGORIES = {
       "A rival who is simply better, most of the time",
       "Society itself, and its quiet cruelties",
       "A monster that used to be human",
-      "A judge who is never wrong, and never merciful"
+      "A judge who is never wrong, and never merciful",
+      "Darth Vader",
+      "Emperor Palpatine",
+      "Voldemort",
+      "Sauron",
+      "The Joker",
+      "Thanos",
+      "Magneto",
+      "Lex Luthor",
+      "Green Goblin",
+      "Doctor Doom",
+      "Loki",
+      "Hannibal Lecter",
+      "Dracula",
+      "Freddy Krueger",
+      "Michael Myers",
+      "Agent Smith",
+      "The Terminator",
+      "HAL 9000",
+      "Cruella de Vil",
+      "Ursula",
+      "Maleficent",
+      "Scar",
+      "Jafar",
+      "Bane",
+      "Ramsay Bolton",
+      "Cersei Lannister",
+      "Moriarty",
+      "Gollum"
     ]
   },
   keyObject: {
@@ -204,31 +263,98 @@ const CATEGORIES = {
   }
 };
 
-// Outline prompts for the fine-tune workshop. Free-text only, no randomizer.
+// Beat sheet prompts for the fine-tune workshop, based on the "Save the Cat!"
+// beat sheet (https://savethecat.com/how-to-write-a-novel). Free-text only,
+// no randomizer.
 const OUTLINE_FIELDS = [
   {
-    key: "incitingIncident",
-    label: "Inciting Incident",
-    placeholder: "What event kicks the story into motion?"
+    key: "openingImage",
+    label: "Opening Image",
+    act: "Act 1 — The Ordinary World",
+    placeholder: "0–1%: A snapshot of the hero before transformation. Sets the tone."
   },
   {
-    key: "coreConflict",
-    label: "Core Conflict",
-    placeholder: "What is the central tension driving the story?"
+    key: "themeStated",
+    label: "Theme Stated",
+    act: "Act 1 — The Ordinary World",
+    placeholder: "5%: Someone poses the question or statement the story is really about."
   },
   {
-    key: "stakes",
-    label: "Stakes",
-    placeholder: "What happens if the protagonist fails?"
+    key: "setUp",
+    label: "Set-Up",
+    act: "Act 1 — The Ordinary World",
+    placeholder: "1–10%: Establish the hero's ordinary life, flaws, and world."
   },
   {
-    key: "turningPoint",
-    label: "Turning Point",
-    placeholder: "What moment changes the direction of the story?"
+    key: "catalyst",
+    label: "Catalyst",
+    act: "Act 1 — The Ordinary World",
+    placeholder: "10%: The life-changing event that sets the story in motion."
   },
   {
-    key: "resolution",
-    label: "Resolution",
-    placeholder: "How does the conflict get resolved (or not)?"
+    key: "debate",
+    label: "Debate",
+    act: "Act 1 — The Ordinary World",
+    placeholder: "10–20%: The hero hesitates. Should they really go on this journey?"
+  },
+  {
+    key: "breakIntoTwo",
+    label: "Break into Two",
+    act: "Act 2 — The Upside-Down World",
+    placeholder: "20%: The no-turning-back decision into a new world or mindset."
+  },
+  {
+    key: "bStory",
+    label: "B Story",
+    act: "Act 2 — The Upside-Down World",
+    placeholder: "22%: A secondary story (love, friendship, mentorship) that carries the theme."
+  },
+  {
+    key: "funAndGames",
+    label: "Fun and Games",
+    act: "Act 2 — The Upside-Down World",
+    placeholder: "20–50%: The 'promise of the premise' — what the trailer would show."
+  },
+  {
+    key: "midpoint",
+    label: "Midpoint",
+    act: "Act 2 — The Upside-Down World",
+    placeholder: "50%: A false victory or false defeat that raises the stakes."
+  },
+  {
+    key: "badGuysCloseIn",
+    label: "Bad Guys Close In",
+    act: "Act 2 — The Upside-Down World",
+    placeholder: "50–75%: External and internal pressure mounts on the hero."
+  },
+  {
+    key: "allIsLost",
+    label: "All Is Lost",
+    act: "Act 2 — The Upside-Down World",
+    placeholder: "75%: The hero's worst fear comes true. Often a 'whiff of death.'"
+  },
+  {
+    key: "darkNightOfTheSoul",
+    label: "Dark Night of the Soul",
+    act: "Act 2 — The Upside-Down World",
+    placeholder: "75–80%: The hero hits bottom and sits with everything they've lost."
+  },
+  {
+    key: "breakIntoThree",
+    label: "Break into Three",
+    act: "Act 3 — Merged World",
+    placeholder: "80%: New information reveals the solution to Act Two's problems."
+  },
+  {
+    key: "finale",
+    label: "Finale",
+    act: "Act 3 — Merged World",
+    placeholder: "80–99%: The climax, where the hero proves their change through action."
+  },
+  {
+    key: "finalImage",
+    label: "Final Image",
+    act: "Act 3 — Merged World",
+    placeholder: "99–100%: A bookend to the Opening Image, showing how far things came."
   }
 ];

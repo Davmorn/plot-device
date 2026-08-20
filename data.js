@@ -1992,6 +1992,36 @@ const CATEGORIES = {
   }
 };
 
+// Prompts for the Challenge tab. Each entry lists the CATEGORIES keys it
+// needs (2-4); those get rolled and substituted into {key} placeholders in
+// the question so it reads as one sentence. See fillTemplate() in script.js.
+const CHALLENGES = [
+  { categories: ["character", "setting"], question: "Why can't {character} leave {setting}, even though every instinct says to run?" },
+  { categories: ["character", "conflict"], question: "What does {character} quietly lose in the middle of {conflict}?" },
+  { categories: ["character", "twist"], question: "What has {character} believed about themselves, right up until {twist}?" },
+  { categories: ["setting", "keyObject"], question: "Why is {keyObject} more trustworthy than anyone else in {setting}?" },
+  { categories: ["character", "keyObject"], question: "What did {character} promise the person who gave them {keyObject}?" },
+  { categories: ["setting", "conflict"], question: "What rule of {setting} makes {conflict} impossible to solve quietly?" },
+  { categories: ["character", "tone"], question: "Underneath a {tone} tone, what is {character} actually terrified of?" },
+  { categories: ["conflict", "twist"], question: "Right when {conflict} seems resolved, {twist}. What happens next?" },
+  { categories: ["character", "genre"], question: "In a {genre} story, what does {character} want that the genre usually doesn't let people have?" },
+  { categories: ["setting", "timePeriod"], question: "Set during {timePeriod}, what does {setting} look like to someone who doesn't yet know it will end?" },
+  { categories: ["character", "setting", "conflict"], question: "{character} wants to leave {setting}, but {conflict} makes staying the only option. What's the exact moment they realize that?" },
+  { categories: ["character", "conflict", "twist"], question: "{character} is racing toward one obvious ending to {conflict} — until {twist} changes everything. What do they do next?" },
+  { categories: ["character", "keyObject", "twist"], question: "{character} would do anything to protect {keyObject} — until {twist} reveals what it actually is. What do they do next?" },
+  { categories: ["setting", "conflict", "tone"], question: "Given a {tone} tone, is {conflict} in {setting} something to survive, or something to laugh about too late?" },
+  { categories: ["character", "setting", "keyObject"], question: "What did {character} bury, hide, or lose somewhere in {setting} — and does {keyObject} have anything to do with it?" },
+  { categories: ["conflict", "genre", "tone"], question: "In a {genre} story, how does a {tone} tone make {conflict} harder to resolve?" },
+  { categories: ["character", "timePeriod", "conflict"], question: "Set during {timePeriod}, how does {conflict} change if {character} is the only one who remembers a time before it?" },
+  { categories: ["character", "setting", "tone", "twist"], question: "In {setting}, with a {tone} tone, everything seems fine for {character} — until {twist}. What's the very next line of dialogue?" },
+  { categories: ["character", "keyObject", "genre", "conflict"], question: "In a {genre} story, {character} carries {keyObject} into the middle of {conflict}. What do they say when someone asks them to give it up?" },
+  { categories: ["setting", "timePeriod", "tone"], question: "Set during {timePeriod}, with a {tone} tone, what does someone see when they first arrive in {setting}?" },
+  { categories: ["character", "twist", "genre"], question: "A {genre} story trains readers to expect one kind of twist. What does {character} do when this happens instead: {twist}?" },
+  { categories: ["conflict", "keyObject"], question: "Could {conflict} be solved instantly with {keyObject} — and why doesn't anyone do that?" },
+  { categories: ["character", "setting", "conflict", "twist"], question: "Everyone in {setting} agrees on how {conflict} ends. {character} disagrees — and then {twist}. What did they see that no one else did?" },
+  { categories: ["character", "tone", "keyObject"], question: "With a {tone} tone, what does {character} do with {keyObject} when no one is watching?" }
+];
+
 // Beat sheet prompts for the fine-tune workshop, based on the "Save the Cat!"
 // beat sheet (https://savethecat.com/how-to-write-a-novel). Free-text only,
 // no randomizer.

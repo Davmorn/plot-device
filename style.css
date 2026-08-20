@@ -112,9 +112,27 @@ body {
 }
 
 .char-count-input {
-  width: 2.5rem !important;
-  min-width: 2.5rem !important;
+  width: 2.75rem !important;
+  min-width: 2.75rem !important;
   flex-shrink: 0;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-align: center;
+}
+
+.char-count-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.char-count-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .character-list {
@@ -285,6 +303,25 @@ body {
   color: var(--text);
 }
 
+.screenshot-value-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.screenshot-value-list .screenshot-value {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.screenshot-value-list .screenshot-value::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
 .screenshot-footer {
   margin-top: 0.8rem;
   padding-top: 0.6rem;
@@ -313,6 +350,36 @@ body {
 @media (max-width: 480px) {
   .share-row {
     flex-direction: column;
+  }
+
+  .screenshot-modal {
+    padding: 1rem;
+  }
+
+  .screenshot-card {
+    max-width: 100%;
+    padding: 1.75rem 1.5rem;
+  }
+
+  .screenshot-header {
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.9rem;
+  }
+
+  .screenshot-items {
+    gap: 1rem;
+  }
+
+  .screenshot-item {
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+
+  .screenshot-footer {
+    margin-top: 1.25rem;
+    padding-top: 0.9rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -369,6 +436,34 @@ body {
   color: var(--muted);
   text-align: center;
   padding: 1rem 0;
+}
+
+/* ---- Challenge view ---- */
+
+.challenge-question-card[hidden] {
+  display: none;
+}
+
+.challenge-question-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem 1.5rem 1.6rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.challenge-question {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.challenge-fill {
+  color: var(--accent);
 }
 
 /* ---- Workshop view ---- */

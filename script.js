@@ -306,13 +306,25 @@ function renderScreenshotView() {
     const label = document.createElement("span");
     label.className = "screenshot-label";
     label.textContent = category.label;
-
-    const val = document.createElement("span");
-    val.className = "screenshot-value";
-    val.textContent = value;
-
     row.appendChild(label);
-    row.appendChild(val);
+
+    if (Array.isArray(value)) {
+      const list = document.createElement("div");
+      list.className = "screenshot-value-list";
+      value.forEach((item) => {
+        const line = document.createElement("div");
+        line.className = "screenshot-value";
+        line.textContent = item;
+        list.appendChild(line);
+      });
+      row.appendChild(list);
+    } else {
+      const val = document.createElement("span");
+      val.className = "screenshot-value";
+      val.textContent = value;
+      row.appendChild(val);
+    }
+
     container.appendChild(row);
   });
 }
@@ -335,6 +347,113 @@ function loadResultsFromUrl() {
     if (value) found[key] = value;
   });
   return found;
+}
+
+// ---- Challenge ----
+
+let currentChallenge = null; // { raw, pieces: {key: value} }
+
+function startsWithVowelSound(text) {
+  return /^[aeiou]/i.test(text.trim());
+}
+
+function capitalize(word) {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+// Splits a template into alternating plain-text and rolled-value tokens,
+// fixing "a"/"an" immediately before a placeholder to match the value that
+// actually gets substituted in.
+function fillTemplateTokens(template, pieces) {
+  const articleFixed = template.replace(/\b(a|an)\s+\{(\w+)\}/gi, (match, article, key) => {
+    const value = pieces[key];
+    if (value === undefined) return match;
+    const correctArticle = startsWithVowelSound(value) ? "an" : "a";
+    const cased = /^[A-Z]/.test(article) ? capitalize(correctArticle) : correctArticle;
+    return `${cased} {${key}}`;
+  });
+
+  return articleFixed
+    .split(/(\{\w+\})/g)
+    .filter((part) => part !== "")
+    .map((part) => {
+      const match = part.match(/^\{(\w+)\}$/);
+      if (match && pieces[match[1]] !== undefined) {
+        return { text: pieces[match[1]], isValue: true };
+      }
+      return { text: part, isValue: false };
+    });
+}
+
+function rollChallenge() {
+  const challenge = pickRandom(CHALLENGES, currentChallenge ? currentChallenge.raw : undefined);
+  const pieces = {};
+  challenge.categories.forEach((key) => {
+    pieces[key] = pickRandom(CATEGORIES[key].items);
+  });
+  currentChallenge = { raw: challenge, pieces };
+  renderChallenge();
+}
+
+function rerollChallengePiece(key) {
+  if (!currentChallenge) return;
+  currentChallenge.pieces[key] = pickRandom(CATEGORIES[key].items, currentChallenge.pieces[key]);
+  renderChallenge();
+}
+
+function renderChallenge() {
+  const container = document.getElementById("challengePieces");
+  const questionCard = document.getElementById("challengeQuestionCard");
+  const questionEl = document.getElementById("challengeQuestion");
+  const refineBtn = document.getElementById("refineChallengeBtn");
+  container.innerHTML = "";
+
+  if (!currentChallenge) {
+    questionCard.hidden = true;
+    refineBtn.hidden = true;
+    return;
+  }
+
+  Object.entries(currentChallenge.pieces).forEach(([key, value]) => {
+    const category = CATEGORIES[key];
+
+    const card = document.createElement("div");
+    card.className = "result-card";
+
+    const label = document.createElement("div");
+    label.className = "result-label";
+    label.textContent = category.label;
+
+    const value_el = document.createElement("div");
+    value_el.className = "result-value";
+    value_el.textContent = value;
+
+    const reroll_btn = document.createElement("button");
+    reroll_btn.className = "reroll-btn";
+    reroll_btn.title = `Reroll ${category.label}`;
+    reroll_btn.setAttribute("aria-label", `Reroll ${category.label}`);
+    reroll_btn.textContent = "⟳";
+    reroll_btn.addEventListener("click", () => rerollChallengePiece(key));
+
+    card.appendChild(reroll_btn);
+    card.appendChild(label);
+    card.appendChild(value_el);
+    container.appendChild(card);
+  });
+
+  questionEl.innerHTML = "";
+  fillTemplateTokens(currentChallenge.raw.question, currentChallenge.pieces).forEach((token) => {
+    if (token.isValue) {
+      const span = document.createElement("span");
+      span.className = "challenge-fill";
+      span.textContent = token.text;
+      questionEl.appendChild(span);
+    } else {
+      questionEl.appendChild(document.createTextNode(token.text));
+    }
+  });
+  questionCard.hidden = false;
+  refineBtn.hidden = false;
 }
 
 // ---- Workshop (fine-tune) view ----
@@ -368,18 +487,21 @@ function saveOutlineValues() {
 
 function showView(name) {
   document.getElementById("generatorView").hidden = name !== "generator";
+  document.getElementById("challengeView").hidden = name !== "challenge";
   document.getElementById("workshopView").hidden = name !== "workshop";
   document.getElementById("draftsView").hidden = name !== "drafts";
 
   document.getElementById("navGenerator").classList.toggle("active", name === "generator" || name === "workshop");
+  document.getElementById("navChallenge").classList.toggle("active", name === "challenge");
   document.getElementById("navDrafts").classList.toggle("active", name === "drafts");
 }
 
-function openWorkshop() {
+function openWorkshop(resultsSource) {
   // Freshly rolled categories overwrite their workshop field; anything the
   // user already typed into an un-rolled category is left alone.
+  const source = resultsSource || currentResults;
   const formattedResults = {};
-  Object.entries(currentResults).forEach(([key, val]) => {
+  Object.entries(source).forEach(([key, val]) => {
     formattedResults[key] = Array.isArray(val) ? val.join("\n") : val;
   });
 
@@ -747,9 +869,18 @@ function init() {
   document.getElementById("saveDraftBtn").addEventListener("click", saveCurrentAsDraft);
 
   document.getElementById("navGenerator").addEventListener("click", () => showView("generator"));
+  document.getElementById("navChallenge").addEventListener("click", () => {
+    if (!currentChallenge) rollChallenge();
+    showView("challenge");
+  });
   document.getElementById("navDrafts").addEventListener("click", () => {
     renderDrafts();
     showView("drafts");
+  });
+
+  document.getElementById("newChallengeBtn").addEventListener("click", rollChallenge);
+  document.getElementById("refineChallengeBtn").addEventListener("click", () => {
+    if (currentChallenge) openWorkshop(currentChallenge.pieces);
   });
 
   document.getElementById("exportGoodBtn").addEventListener("click", exportGoodIdeas);

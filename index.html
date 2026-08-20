@@ -20,6 +20,7 @@
 
   <nav class="top-nav">
     <button id="navGenerator" class="nav-link">Generator</button>
+    <button id="navChallenge" class="nav-link">Challenge</button>
     <button id="navDrafts" class="nav-link">My Drafts</button>
   </nav>
 
@@ -56,6 +57,21 @@
       <div class="screenshot-footer">davmorn.github.io/plot-device</div>
     </div>
     <button id="closeScreenshotBtn" class="screenshot-close" aria-label="Close compact view">✕ Close</button>
+  </div>
+
+  <div id="challengeView" class="view" hidden>
+    <h2 class="view-title">Story Challenge</h2>
+    <p class="subtitle">Roll a few pieces, then answer the question they raise.</p>
+
+    <button id="newChallengeBtn" class="generate-btn">New Challenge</button>
+
+    <section id="challengePieces" class="output"></section>
+
+    <div id="challengeQuestionCard" class="challenge-question-card" hidden>
+      <p id="challengeQuestion" class="challenge-question"></p>
+    </div>
+
+    <button id="refineChallengeBtn" class="generate-btn secondary" hidden>Fine-tune this &rarr;</button>
   </div>
 
   <div id="workshopView" class="view" hidden>

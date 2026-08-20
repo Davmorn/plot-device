@@ -42,6 +42,20 @@
     <section id="output" class="output"></section>
 
     <button id="refineBtn" class="generate-btn secondary" hidden>Fine-tune this &rarr;</button>
+    <div class="share-row">
+      <button id="shareBtn" class="generate-btn secondary" hidden>🔗 Copy share link</button>
+      <button id="screenshotBtn" class="generate-btn secondary" hidden>📸 Compact view</button>
+    </div>
+    <p id="shareStatus" class="share-status" aria-live="polite"></p>
+  </div>
+
+  <div id="screenshotModal" class="screenshot-modal" hidden>
+    <div class="screenshot-card" id="screenshotCard">
+      <div class="screenshot-header">🖋️ Plot Device</div>
+      <div id="screenshotItems" class="screenshot-items"></div>
+      <div class="screenshot-footer">davmorn.github.io/plot-device</div>
+    </div>
+    <button id="closeScreenshotBtn" class="screenshot-close" aria-label="Close compact view">✕ Close</button>
   </div>
 
   <div id="workshopView" class="view" hidden>

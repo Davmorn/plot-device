@@ -175,10 +175,13 @@ function rerollSubItem(key, index) {
 function renderResults() {
   const output = document.getElementById("output");
   const refineBtn = document.getElementById("refineBtn");
+  const shareBtn = document.getElementById("shareBtn");
   output.innerHTML = "";
 
   const hasResults = Object.keys(currentResults).length > 0;
   refineBtn.hidden = !hasResults;
+  shareBtn.hidden = !hasResults;
+  document.getElementById("screenshotBtn").hidden = !hasResults;
 
   Object.entries(currentResults).forEach(([key, value]) => {
     const category = CATEGORIES[key];
@@ -237,6 +240,101 @@ function renderResults() {
     card.appendChild(value_el);
     output.appendChild(card);
   });
+}
+
+// ---- Sharing ----
+
+let shareStatusTimer = null;
+
+function buildShareUrl() {
+  const params = new URLSearchParams();
+  Object.entries(currentResults).forEach(([key, value]) => {
+    params.set(key, value);
+  });
+  const url = new URL(window.location.href);
+  url.search = params.toString();
+  url.hash = "";
+  return url.toString();
+}
+
+function showShareStatus(message) {
+  const statusEl = document.getElementById("shareStatus");
+  statusEl.textContent = message;
+  clearTimeout(shareStatusTimer);
+  shareStatusTimer = setTimeout(() => {
+    statusEl.textContent = "";
+  }, 4000);
+}
+
+async function copyShareLink() {
+  if (Object.keys(currentResults).length === 0) return;
+  const url = buildShareUrl();
+
+  try {
+    await navigator.clipboard.writeText(url);
+    showShareStatus("Link copied! Paste it anywhere to share this combo.");
+    return;
+  } catch (e) {
+    // Clipboard API unavailable (e.g. older browser or non-HTTPS) — fall back below.
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = url;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand("copy");
+    showShareStatus("Link copied! Paste it anywhere to share this combo.");
+  } catch (e) {
+    showShareStatus(url);
+  }
+  document.body.removeChild(textarea);
+}
+
+function renderScreenshotView() {
+  const container = document.getElementById("screenshotItems");
+  container.innerHTML = "";
+
+  Object.entries(currentResults).forEach(([key, value]) => {
+    const category = CATEGORIES[key];
+
+    const row = document.createElement("div");
+    row.className = "screenshot-item";
+
+    const label = document.createElement("span");
+    label.className = "screenshot-label";
+    label.textContent = category.label;
+
+    const val = document.createElement("span");
+    val.className = "screenshot-value";
+    val.textContent = value;
+
+    row.appendChild(label);
+    row.appendChild(val);
+    container.appendChild(row);
+  });
+}
+
+function openScreenshotView() {
+  if (Object.keys(currentResults).length === 0) return;
+  renderScreenshotView();
+  document.getElementById("screenshotModal").hidden = false;
+}
+
+function closeScreenshotView() {
+  document.getElementById("screenshotModal").hidden = true;
+}
+
+function loadResultsFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const found = {};
+  Object.keys(CATEGORIES).forEach((key) => {
+    const value = params.get(key);
+    if (value) found[key] = value;
+  });
+  return found;
 }
 
 // ---- Workshop (fine-tune) view ----
@@ -428,6 +526,7 @@ function saveCurrentAsDraft() {
   currentResults = {};
   saveWorkshopValues();
   saveOutlineValues();
+  renderResults();
 
   renderDrafts();
   showView("drafts");
@@ -488,6 +587,7 @@ function loadDraftIntoWorkshop(id) {
   currentResults = {};
   saveWorkshopValues();
   saveOutlineValues();
+  renderResults();
   renderWorkshopFields();
   renderOutlineFields();
   showView("workshop");
@@ -634,6 +734,15 @@ function init() {
   });
 
   document.getElementById("refineBtn").addEventListener("click", openWorkshop);
+  document.getElementById("shareBtn").addEventListener("click", copyShareLink);
+  document.getElementById("screenshotBtn").addEventListener("click", openScreenshotView);
+  document.getElementById("closeScreenshotBtn").addEventListener("click", closeScreenshotView);
+  document.getElementById("screenshotModal").addEventListener("click", (e) => {
+    if (e.target.id === "screenshotModal") closeScreenshotView();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeScreenshotView();
+  });
   document.getElementById("backBtn").addEventListener("click", () => showView("generator"));
   document.getElementById("saveDraftBtn").addEventListener("click", saveCurrentAsDraft);
 
@@ -651,7 +760,18 @@ function init() {
   });
 
   showView("generator");
-  generate();
+
+  const sharedResults = loadResultsFromUrl();
+  if (Object.keys(sharedResults).length > 0) {
+    currentResults = sharedResults;
+    saveActiveKeys(Object.keys(sharedResults));
+    document.querySelectorAll("#categoryToggles input").forEach((el) => {
+      el.checked = Object.prototype.hasOwnProperty.call(sharedResults, el.dataset.key);
+    });
+    renderResults();
+  } else {
+    generate();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", init);

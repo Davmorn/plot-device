@@ -1,4 +1,5 @@
-const DEFAULT_ACTIVE = ["protagonist", "setting", "conflict"];
+const DEFAULT_ACTIVE = ["character", "setting", "conflict"];
+const DEFAULT_CHAR_COUNT = 2;
 
 function loadActiveKeys() {
   const saved = localStorage.getItem("activeCategories");
@@ -14,6 +15,15 @@ function loadActiveKeys() {
 
 function saveActiveKeys(keys) {
   localStorage.setItem("activeCategories", JSON.stringify(keys));
+}
+
+function loadCharCount() {
+  const saved = localStorage.getItem("charCount");
+  return saved ? Math.max(1, parseInt(saved, 10) || 1) : DEFAULT_CHAR_COUNT;
+}
+
+function saveCharCount(count) {
+  localStorage.setItem("charCount", count);
 }
 
 function renderToggles() {
@@ -34,20 +44,54 @@ function renderToggles() {
 
     label.appendChild(checkbox);
     label.appendChild(span);
+
+    // Dynamically insert the number input into the character toggle label
+    if (key === "character") {
+      const charInput = document.createElement("input");
+      charInput.type = "number";
+      charInput.id = "charCountInput";
+      charInput.inputMode = "numeric"; // Triggers numeric keypad on mobile
+      charInput.min = "1";
+      charInput.max = "10";
+      charInput.value = loadCharCount();
+      charInput.className = "char-count-input";
+
+      // Prevent interacting with the number input from toggling the checkbox
+      charInput.addEventListener("click", (e) => e.stopPropagation());
+
+      charInput.addEventListener("change", (e) => {
+        let val = parseInt(e.target.value, 10) || 1;
+        val = Math.max(1, Math.min(10, val));
+        e.target.value = val;
+        saveCharCount(val);
+      });
+
+      label.appendChild(charInput);
+    }
+
     container.appendChild(label);
   });
 
   container.addEventListener("change", () => {
     saveActiveKeys(getCheckedKeys());
+    updateCharCountState();
   });
 }
 
 function getCheckedKeys() {
-  return Array.from(document.querySelectorAll("#categoryToggles input:checked"))
+  return Array.from(document.querySelectorAll("#categoryToggles input[type='checkbox']:checked"))
     .map((el) => el.dataset.key);
 }
 
-let currentResults = {}; // key -> currently displayed value
+function updateCharCountState() {
+  const charInput = document.getElementById("charCountInput");
+  const charCheckbox = document.querySelector('#categoryToggles input[data-key="character"]');
+  if (charInput && charCheckbox) {
+    charInput.disabled = !charCheckbox.checked;
+  }
+}
+
+let currentResults = {}; // key -> currently displayed value (string or array of strings)
 
 function pickRandom(items, exclude) {
   if (items.length > 1 && exclude !== undefined) {
@@ -60,6 +104,19 @@ function pickRandom(items, exclude) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
+function pickMultiple(items, count) {
+  const pool = [...items];
+  const picked = [];
+  const targetCount = Math.min(count, pool.length);
+
+  for (let i = 0; i < targetCount; i++) {
+    const index = Math.floor(Math.random() * pool.length);
+    picked.push(pool[index]);
+    pool.splice(index, 1);
+  }
+  return picked;
+}
+
 function generate() {
   const checkedKeys = getCheckedKeys();
 
@@ -70,16 +127,48 @@ function generate() {
     return;
   }
 
+  const charCountInput = document.getElementById("charCountInput");
+  const count = charCountInput ? parseInt(charCountInput.value, 10) || 1 : 1;
+
   currentResults = {};
   checkedKeys.forEach((key) => {
-    currentResults[key] = pickRandom(CATEGORIES[key].items);
+    if (key === "character") {
+      currentResults[key] = pickMultiple(CATEGORIES[key].items, count);
+    } else {
+      currentResults[key] = pickRandom(CATEGORIES[key].items);
+    }
   });
   renderResults();
 }
 
 function rerollOne(key) {
   const category = CATEGORIES[key];
-  currentResults[key] = pickRandom(category.items, currentResults[key]);
+  if (key === "character") {
+    const charCountInput = document.getElementById("charCountInput");
+    const count = charCountInput ? parseInt(charCountInput.value, 10) || 1 : 1;
+    currentResults[key] = pickMultiple(category.items, count);
+  } else {
+    currentResults[key] = pickRandom(category.items, currentResults[key]);
+  }
+  renderResults();
+}
+
+function rerollSubItem(key, index) {
+  if (!Array.isArray(currentResults[key])) return;
+
+  const category = CATEGORIES[key];
+  const currentList = currentResults[key];
+
+  // Filter pool to avoid picking duplicates of characters currently displayed
+  const pool = category.items.filter((item) => !currentList.includes(item));
+
+  if (pool.length > 0) {
+    currentResults[key][index] = pickRandom(pool);
+  } else {
+    // Fallback if pool is small
+    currentResults[key][index] = pickRandom(category.items, currentList[index]);
+  }
+
   renderResults();
 }
 
@@ -103,12 +192,43 @@ function renderResults() {
 
     const value_el = document.createElement("div");
     value_el.className = "result-value";
-    value_el.textContent = value;
+
+    if (Array.isArray(value)) {
+      if (value.length > 1) {
+        const ul = document.createElement("ul");
+        ul.className = "character-list";
+
+        value.forEach((item, index) => {
+          const li = document.createElement("li");
+          li.className = "character-item";
+
+          const textSpan = document.createElement("span");
+          textSpan.textContent = item;
+
+          const singleRerollBtn = document.createElement("button");
+          singleRerollBtn.className = "item-reroll-btn";
+          singleRerollBtn.title = `Reroll this character`;
+          singleRerollBtn.setAttribute("aria-label", `Reroll character ${index + 1}`);
+          singleRerollBtn.textContent = "⟳";
+          singleRerollBtn.addEventListener("click", () => rerollSubItem(key, index));
+
+          li.appendChild(textSpan);
+          li.appendChild(singleRerollBtn);
+          ul.appendChild(li);
+        });
+
+        value_el.appendChild(ul);
+      } else {
+        value_el.textContent = value[0] || "";
+      }
+    } else {
+      value_el.textContent = value;
+    }
 
     const reroll_btn = document.createElement("button");
     reroll_btn.className = "reroll-btn";
-    reroll_btn.title = `Reroll ${category.label}`;
-    reroll_btn.setAttribute("aria-label", `Reroll ${category.label}`);
+    reroll_btn.title = `Reroll All ${category.label}s`;
+    reroll_btn.setAttribute("aria-label", `Reroll All ${category.label}s`);
     reroll_btn.textContent = "⟳";
     reroll_btn.addEventListener("click", () => rerollOne(key));
 
@@ -160,7 +280,12 @@ function showView(name) {
 function openWorkshop() {
   // Freshly rolled categories overwrite their workshop field; anything the
   // user already typed into an un-rolled category is left alone.
-  workshopValues = { ...workshopValues, ...currentResults };
+  const formattedResults = {};
+  Object.entries(currentResults).forEach(([key, val]) => {
+    formattedResults[key] = Array.isArray(val) ? val.join("\n") : val;
+  });
+
+  workshopValues = { ...workshopValues, ...formattedResults };
   saveWorkshopValues();
   renderWorkshopFields();
   showView("workshop");
@@ -193,7 +318,7 @@ function renderWorkshopFields() {
 
     const textarea = document.createElement("textarea");
     textarea.id = `field-${key}`;
-    textarea.rows = 2;
+    textarea.rows = key === "character" ? 4 : 2;
     textarea.value = workshopValues[key] || "";
 
     textarea.addEventListener("input", () => {
@@ -202,7 +327,13 @@ function renderWorkshopFields() {
     });
 
     dice_btn.addEventListener("click", () => {
-      textarea.value = pickRandom(category.items, textarea.value);
+      if (key === "character") {
+        const charCountInput = document.getElementById("charCountInput");
+        const count = charCountInput ? parseInt(charCountInput.value, 10) || 1 : 1;
+        textarea.value = pickMultiple(category.items, count).join("\n");
+      } else {
+        textarea.value = pickRandom(category.items, textarea.value);
+      }
       workshopValues[key] = textarea.value;
       saveWorkshopValues();
     });
@@ -307,7 +438,10 @@ function draftPreview(draft) {
     .filter(([key]) => draft.elements[key])
     .slice(0, 3)
     .map(([key, category]) => {
-      const value = draft.elements[key];
+      let value = draft.elements[key];
+      if (value.includes("\n")) {
+        value = value.split("\n").join(", ");
+      }
       const trimmed = value.length > 60 ? value.slice(0, 57) + "…" : value;
       return `${category.label}: ${trimmed}`;
     });
@@ -483,16 +617,20 @@ function init() {
   renderToggles();
   renderOutlineFields();
 
+  updateCharCountState();
+
   document.getElementById("generateBtn").addEventListener("click", generate);
 
   document.getElementById("selectAll").addEventListener("click", () => {
-    document.querySelectorAll("#categoryToggles input").forEach((el) => (el.checked = true));
+    document.querySelectorAll("#categoryToggles input[type='checkbox']").forEach((el) => (el.checked = true));
     saveActiveKeys(getCheckedKeys());
+    updateCharCountState();
   });
 
   document.getElementById("selectNone").addEventListener("click", () => {
-    document.querySelectorAll("#categoryToggles input").forEach((el) => (el.checked = false));
+    document.querySelectorAll("#categoryToggles input[type='checkbox']").forEach((el) => (el.checked = false));
     saveActiveKeys(getCheckedKeys());
+    updateCharCountState();
   });
 
   document.getElementById("refineBtn").addEventListener("click", openWorkshop);

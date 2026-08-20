@@ -111,6 +111,41 @@ body {
   gap: 0.5rem 1rem;
 }
 
+.char-count-input {
+  width: 2.5rem !important;
+  min-width: 2.5rem !important;
+  flex-shrink: 0;
+}
+
+.character-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.character-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.item-reroll-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #6e655f;
+  cursor: pointer;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.item-reroll-btn:hover {
+  color: #8a5a44;
+  background-color: #fcf9f5;
+}
+
 .toggle {
   display: flex;
   align-items: center;
@@ -178,7 +213,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--muted);
-  margin-bottom: 0.25rem;
+  margin-bottom: 1rem;
 }
 
 .result-value {

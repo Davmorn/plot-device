@@ -1,7 +1,7 @@
 // Story element categories. Each key is a category; edit/add items freely.
 const CATEGORIES = {
-  protagonist: {
-    label: "Protagonist",
+  character: {
+    label: "Character",
     items: [
       "A retired superhero who's lost their powers",
       "A small-town librarian with a hidden past",
@@ -167,53 +167,6 @@ const CATEGORIES = {
       "Slice of life"
     ]
   },
-  antagonist: {
-    label: "Antagonist",
-    items: [
-      "A bureaucrat enforcing an unjust law",
-      "A former ally who now sees things differently",
-      "A force of nature given a will of its own",
-      "An idealist willing to do anything for their cause",
-      "A version of the protagonist from another timeline",
-      "A corporation that owns the concept of memory",
-      "A god who wants to be forgotten",
-      "An AI optimizing for the 'wrong' outcome",
-      "A parent who won't let go",
-      "A cult that believes the end is a gift",
-      "A rival who is simply better, most of the time",
-      "Society itself, and its quiet cruelties",
-      "A monster that used to be human",
-      "A judge who is never wrong, and never merciful",
-      "Darth Vader",
-      "Emperor Palpatine",
-      "Voldemort",
-      "Sauron",
-      "The Joker",
-      "Thanos",
-      "Magneto",
-      "Lex Luthor",
-      "Green Goblin",
-      "Doctor Doom",
-      "Loki",
-      "Hannibal Lecter",
-      "Dracula",
-      "Freddy Krueger",
-      "Michael Myers",
-      "Agent Smith",
-      "The Terminator",
-      "HAL 9000",
-      "Cruella de Vil",
-      "Ursula",
-      "Maleficent",
-      "Scar",
-      "Jafar",
-      "Bane",
-      "Ramsay Bolton",
-      "Cersei Lannister",
-      "Moriarty",
-      "Gollum"
-    ]
-  },
   keyObject: {
     label: "Key Object",
     items: [
@@ -229,21 +182,6 @@ const CATEGORIES = {
       "A cloak that makes you forgettable, not invisible",
       "A recipe passed down with a hidden meaning",
       "A photograph of a place that no longer exists"
-    ]
-  },
-  secondaryCharacter: {
-    label: "Secondary Character",
-    items: [
-      "A child who knows more than they let on",
-      "An estranged sibling seeking reconciliation",
-      "A rival turned reluctant ally",
-      "A mentor hiding a terminal secret",
-      "A stranger who shows up at the worst/best moment",
-      "An animal companion who understands more than expected",
-      "A bureaucrat quietly helping from the shadows",
-      "An old flame with unfinished business",
-      "A ghost who won't move on until a debt is settled",
-      "A con artist who becomes an unlikely friend"
     ]
   },
   timePeriod: {

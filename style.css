@@ -164,6 +164,119 @@ body {
   gap: 0.75rem;
 }
 
+.share-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.share-row .generate-btn.secondary {
+  margin-top: 0;
+  flex: 1 1 0;
+}
+
+.share-status {
+  margin: 0.6rem 0 0;
+  min-height: 1.1em;
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-align: center;
+}
+
+/* ---- Compact/screenshot view ---- */
+
+.screenshot-modal[hidden] {
+  display: none;
+}
+
+.screenshot-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: rgba(20, 16, 12, 0.6);
+}
+
+.screenshot-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.screenshot-header {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 0.7rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.screenshot-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.screenshot-item {
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.screenshot-label {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.screenshot-label::after {
+  content: ": ";
+}
+
+.screenshot-value {
+  color: var(--text);
+}
+
+.screenshot-footer {
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+.screenshot-close {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.screenshot-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 480px) {
+  .share-row {
+    flex-direction: column;
+  }
+}
+
 .result-card {
   position: relative;
   background: var(--card-bg);

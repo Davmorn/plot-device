@@ -126,6 +126,10 @@ body {
   cursor: pointer;
 }
 
+.generate-btn[hidden] {
+  display: none;
+}
+
 .generate-btn {
   display: block;
   width: 100%;

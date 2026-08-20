@@ -395,6 +395,7 @@ function saveCurrentAsDraft() {
   currentResults = {};
   saveWorkshopValues();
   saveOutlineValues();
+  renderResults();
 
   renderDrafts();
   showView("drafts");
@@ -452,6 +453,7 @@ function loadDraftIntoWorkshop(id) {
   currentResults = {};
   saveWorkshopValues();
   saveOutlineValues();
+  renderResults();
   renderWorkshopFields();
   renderOutlineFields();
   showView("workshop");
